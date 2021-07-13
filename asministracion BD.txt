@@ -1,425 +1,25 @@
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ACTIVIDAD') and o.name = 'FK_ACTIVIDA_ASIGNA_ESPECIAL')
-alter table ACTIVIDAD
-   drop constraint FK_ACTIVIDA_ASIGNA_ESPECIAL
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ACTIVIDAD') and o.name = 'FK_ACTIVIDA_PARTICIPA_ANCIANO')
-alter table ACTIVIDAD
-   drop constraint FK_ACTIVIDA_PARTICIPA_ANCIANO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ANCIANO') and o.name = 'FK_ANCIANO_ATENDIDO_MEDICO')
-alter table ANCIANO
-   drop constraint FK_ANCIANO_ATENDIDO_MEDICO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ANCIANO') and o.name = 'FK_ANCIANO_PUEDE2_ESTANCIA')
-alter table ANCIANO
-   drop constraint FK_ANCIANO_PUEDE2_ESTANCIA
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ANCIANO') and o.name = 'FK_ANCIANO_RELATIONS_CONTROL_')
-alter table ANCIANO
-   drop constraint FK_ANCIANO_RELATIONS_CONTROL_
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ANCIANO') and o.name = 'FK_ANCIANO_TIENE_ASILO')
-alter table ANCIANO
-   drop constraint FK_ANCIANO_TIENE_ASILO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('CONTROL_DIETA') and o.name = 'FK_CONTROL__REALIZA_PERSONAL')
-alter table CONTROL_DIETA
-   drop constraint FK_CONTROL__REALIZA_PERSONAL
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ESTANCIA') and o.name = 'FK_ESTANCIA_LLEVA_ASO_BENE')
-alter table ESTANCIA
-   drop constraint FK_ESTANCIA_LLEVA_ASO_BENE
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ESTANCIA') and o.name = 'FK_ESTANCIA_LLEVAR_FAMILIAR')
-alter table ESTANCIA
-   drop constraint FK_ESTANCIA_LLEVAR_FAMILIAR
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ESTANCIA') and o.name = 'FK_ESTANCIA_PUEDE_ANCIANO')
-alter table ESTANCIA
-   drop constraint FK_ESTANCIA_PUEDE_ANCIANO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ESTANCIA') and o.name = 'FK_ESTANCIA_REGISTRA_ASILO')
-alter table ESTANCIA
-   drop constraint FK_ESTANCIA_REGISTRA_ASILO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('FALLECIDOS') and o.name = 'FK_FALLECID_ATIENDE_MEDICO')
-alter table FALLECIDOS
-   drop constraint FK_FALLECID_ATIENDE_MEDICO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('FAMILIAR') and o.name = 'FK_FAMILIAR_INFORMA_FALLECID')
-alter table FAMILIAR
-   drop constraint FK_FAMILIAR_INFORMA_FALLECID
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('FAMILIAR') and o.name = 'FK_FAMILIAR_POSEE_ANCIANO')
-alter table FAMILIAR
-   drop constraint FK_FAMILIAR_POSEE_ANCIANO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PAGOS') and o.name = 'FK_PAGOS_APOYA_ASO_BENE')
-alter table PAGOS
-   drop constraint FK_PAGOS_APOYA_ASO_BENE
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PAGOS') and o.name = 'FK_PAGOS_PAGA_FAMILIAR')
-alter table PAGOS
-   drop constraint FK_PAGOS_PAGA_FAMILIAR
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PAGOS') and o.name = 'FK_PAGOS_REALIZAN_ASILO')
-alter table PAGOS
-   drop constraint FK_PAGOS_REALIZAN_ASILO
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ACTIVIDAD')
-            and   name  = 'ASIGNA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ACTIVIDAD.ASIGNA_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ACTIVIDAD')
-            and   name  = 'PARTICIPA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ACTIVIDAD.PARTICIPA_FK
-go
-
-alter table ACTIVIDAD
-   drop constraint PK_ACTIVIDAD
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ACTIVIDAD')
-            and   type = 'U')
-   drop table ACTIVIDAD
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ANCIANO')
-            and   name  = 'ATENDIDO_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ANCIANO.ATENDIDO_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ANCIANO')
-            and   name  = 'PUEDE2_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ANCIANO.PUEDE2_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ANCIANO')
-            and   name  = 'RELATIONSHIP_7_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ANCIANO.RELATIONSHIP_7_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ANCIANO')
-            and   name  = 'TIENE_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ANCIANO.TIENE_FK
-go
-
-alter table ANCIANO
-   drop constraint PK_ANCIANO
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ANCIANO')
-            and   type = 'U')
-   drop table ANCIANO
-go
-
-alter table ASILO
-   drop constraint PK_ASILO
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ASILO')
-            and   type = 'U')
-   drop table ASILO
-go
-
-alter table ASO_BENEFICA
-   drop constraint PK_ASO_BENEFICA
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ASO_BENEFICA')
-            and   type = 'U')
-   drop table ASO_BENEFICA
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('CONTROL_DIETA')
-            and   name  = 'REALIZA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index CONTROL_DIETA.REALIZA_FK
-go
-
-alter table CONTROL_DIETA
-   drop constraint PK_CONTROL_DIETA
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('CONTROL_DIETA')
-            and   type = 'U')
-   drop table CONTROL_DIETA
-go
-
-alter table ESPECIALISTA
-   drop constraint PK_ESPECIALISTA
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ESPECIALISTA')
-            and   type = 'U')
-   drop table ESPECIALISTA
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ESTANCIA')
-            and   name  = 'LLEVAR_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ESTANCIA.LLEVAR_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ESTANCIA')
-            and   name  = 'LLEVA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ESTANCIA.LLEVA_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ESTANCIA')
-            and   name  = 'PUEDE_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ESTANCIA.PUEDE_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('ESTANCIA')
-            and   name  = 'REGISTRA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index ESTANCIA.REGISTRA_FK
-go
-
-alter table ESTANCIA
-   drop constraint PK_ESTANCIA
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ESTANCIA')
-            and   type = 'U')
-   drop table ESTANCIA
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('FALLECIDOS')
-            and   name  = 'ATIENDE_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index FALLECIDOS.ATIENDE_FK
-go
-
-alter table FALLECIDOS
-   drop constraint PK_FALLECIDOS
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('FALLECIDOS')
-            and   type = 'U')
-   drop table FALLECIDOS
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('FAMILIAR')
-            and   name  = 'INFORMA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index FAMILIAR.INFORMA_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('FAMILIAR')
-            and   name  = 'POSEE_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index FAMILIAR.POSEE_FK
-go
-
-alter table FAMILIAR
-   drop constraint PK_FAMILIAR
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('FAMILIAR')
-            and   type = 'U')
-   drop table FAMILIAR
-go
-
-alter table MEDICO
-   drop constraint PK_MEDICO
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('MEDICO')
-            and   type = 'U')
-   drop table MEDICO
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('PAGOS')
-            and   name  = 'APOYA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index PAGOS.APOYA_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('PAGOS')
-            and   name  = 'REALIZAN_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index PAGOS.REALIZAN_FK
-go
-
-if exists (select 1
-            from  sysindexes
-           where  id    = object_id('PAGOS')
-            and   name  = 'PAGA_FK'
-            and   indid > 0
-            and   indid < 255)
-   drop index PAGOS.PAGA_FK
-go
-
-alter table PAGOS
-   drop constraint PK_PAGOS
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('PAGOS')
-            and   type = 'U')
-   drop table PAGOS
-go
-
-alter table PERSONAL_DIETA
-   drop constraint PK_PERSONAL_DIETA
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('PERSONAL_DIETA')
-            and   type = 'U')
-   drop table PERSONAL_DIETA
-go
-
 /*==============================================================*/
 /* Table: ACTIVIDAD                                             */
 /*==============================================================*/
 create table ACTIVIDAD (
-   ID_ACTIVIDAD         int                  not null,
+   ID_ENTRETENIMIENTO   int                  not null,
    ID_ASILO             int                  null,
    ID_ESPECIALISTA      int                  null,
    NOMBRE_ACTIVIDAD     varchar(50)          null,
-   HORA_INICIO          datetime             null,
-   HORA_FIN             datetime             null,
-   TIPO                 varchar(50)          null
+   HORA_INICIO          time             null,
+   HORA_FIN             time             null,
+   TIPO                 varchar(50)          null,
+   constraint PK_ACTIVIDAD primary key (ID_ENTRETENIMIENTO)
 )
 go
+SELECT * FROM ACTIVIDAD
+insert into ACTIVIDAD values 
+(1,1,1,'Bingo',8.11,11.00,'individual')
 
-alter table ACTIVIDAD
-   add constraint PK_ACTIVIDAD primary key (ID_ACTIVIDAD)
-go
+SELECT * FROM ACTIVIDAD
+SELECT * FROM ESTANCIA
 
+,
 /*==============================================================*/
 /* Index: PARTICIPA_FK                                          */
 /*==============================================================*/
@@ -451,13 +51,23 @@ create table ANCIANO (
    ID_MEDICO            int                  null,
    NOMBRES              varchar(50)          null,
    EDAD                 varchar(50)          null,
-   FECHA_INGRESO        datetime             null
+   FECHA_INGRESO        date             null,
+   constraint PK_ANCIANO primary key (ID_ASILO)
 )
 go
-
-alter table ANCIANO
-   add constraint PK_ANCIANO primary key (ID_ASILO)
-go
+Select * from ANCIANO
+insert into ANCIANO values 
+(1,2,3,4,5,'Emilio Garcia',60,12-02-2019),
+(2,1,1,'Manuel Cañar',64,1-20-2020),
+(3,1,1,'Jaime Perez',72,2-1-20),
+(4,1,2,'Miguel Lopez',65,2-7-2020),
+(5,1,3,'Alexis Mieles',75,12-02-2015),
+(6,1,3,'Caren Gomez',60,12-02-2018),
+(7,1,5,'Emilio Gomez',72,12-05-2016),
+(8,1,5,'Carlos Uribe',65,12-02-2019),
+(9,1,2,'Roberto Cabrera',60,02-06-2017),
+(10,1,3,'Santiago Lopez',72,05-07-2016),
+(11,1,2,'Patricia Rodriguez',80,06-02-2015)
 
 /*==============================================================*/
 /* Index: TIENE_FK                                              */
@@ -506,14 +116,15 @@ create table ASILO (
    ID_ASILO             int                  not null,
    NOMBRE               varchar(50)          null,
    CORREO               varchar(50)          null,
-   TELEFONO             varchar(10)          null
+   TELEFONO             varchar(10)          null,
+   constraint PK_ASILO primary key (ID_ASILO)
 )
 go
 
-alter table ASILO
-   add constraint PK_ASILO primary key (ID_ASILO)
-go
+insert into ASILO values 
+(1,'Fundacion Cotolego','fundacion@gmail.com',098636363)
 
+select * from ASILO
 /*==============================================================*/
 /* Table: ASO_BENEFICA                                          */
 /*==============================================================*/
@@ -522,13 +133,19 @@ create table ASO_BENEFICA (
    NOMBRE               varchar(50)          null,
    PAGO                 money                null,
    CORREO               varchar(50)          null,
-   DIRECCION            varchar(50)          null
+   DIRECCION            varchar(50)          null,
+   constraint PK_ASO_BENEFICA primary key (ID_BENEFICA)
 )
 go
 
-alter table ASO_BENEFICA
-   add constraint PK_ASO_BENEFICA primary key (ID_BENEFICA)
-go
+insert into ASO_BENEFICA values 
+(1,'Caritas del Señor', 200,'carita@gmail.com','calle 21'),
+(2,'Cotalego', 200,'cotalego@gmail.com','Los Geranios calle brazil')
+
+
+
+
+select * from ASO_BENEFICA
 
 /*==============================================================*/
 /* Table: CONTROL_DIETA                                         */
@@ -540,13 +157,17 @@ create table CONTROL_DIETA (
    PROTEINA_ATA         varchar(50)          null,
    CARBOHIDRATOS        varchar(50)          null,
    DIETA_ALCALINA       varchar(50)          null,
-   DIETA_DETOX          varchar(50)          null
+   DIETA_DETOX          varchar(50)          null,
+   constraint PK_CONTROL_DIETA primary key (ID_DIETA)
 )
 go
+insert into CONTROL_DIETA values 
+(2,1,'Poca sal y verduras ','Pescado, carnes','Espaguetis, pastas','poco arroz','No alimentos pesados'),
+(3,2,'Poca sal y verduras ','Pescado, carnes','Espaguetis, pastas','poco arroz','No alimentos pesados'),
+(4,1,'Poca sal y verduras ','Pescado, carnes','Espaguetis, pastas','poco arroz','No alimentos pesados')
 
-alter table CONTROL_DIETA
-   add constraint PK_CONTROL_DIETA primary key (ID_DIETA)
-go
+
+select * from CONTROL_DIETA
 
 /*==============================================================*/
 /* Index: REALIZA_FK                                            */
@@ -565,16 +186,21 @@ create table ESPECIALISTA (
    ID_ESPECIALISTA      int                  not null,
    NOMBRE               varchar(50)          null,
    TITULO               varchar(50)          null,
-   FECHA_INGRESO        datetime             null,
+   FECHA_INGRESO        datetime            null,
    DIRECCION            varchar(50)          null,
-   TELEFONO             varchar(10)          null
+   TELEFONO             varchar(10)          null,
+   constraint PK_ESPECIALISTA primary key (ID_ESPECIALISTA)
 )
 go
+insert into ESPECIALISTA values 
 
-alter table ESPECIALISTA
-   add constraint PK_ESPECIALISTA primary key (ID_ESPECIALISTA)
-go
+(3,' Jaime Chila','enfermero',2019-04-03 ,'calle Garcia',099444939),
+(4,'Luis Ernesto','odontologo',2016-07-02 ,'calle 10',032224939),
+(5,'Mauro Loor','enfermero',2014-04-02 ,'calle 110',09557839)
 
+
+
+select * from ESPECIALISTA
 /*==============================================================*/
 /* Table: ESTANCIA                                              */
 /*==============================================================*/
@@ -587,13 +213,15 @@ create table ESTANCIA (
    NOMBRE_FAMILIAR      varchar(50)          null,
    TELEFONO_FAMILIAR    varchar(10)          null,
    FICHA                varchar(50)          null,
-   CONDICIONES          varchar(50)          null
+   CONDICIONES          varchar(50)          null,
+   constraint PK_ESTANCIA primary key (ID_ESTANCIA)
 )
 go
+insert into ESTANCIA values 
+(1,1,3,1,2,'Emilio Garcia',03838383883,'si','usa silla de ruedas')
 
-alter table ESTANCIA
-   add constraint PK_ESTANCIA primary key (ID_ESTANCIA)
-go
+
+select * from ESTANCIA 
 
 /*==============================================================*/
 /* Index: REGISTRA_FK                                           */
@@ -642,14 +270,14 @@ create table FALLECIDOS (
    ID_FALLECIDO         int                  not null,
    ID_MEDICO            int                  null,
    NOMBRE               varchar(50)          null,
-   DESCRIPCION          varchar(50)          null
+   DESCRIPCION          varchar(50)          null,
+   constraint PK_FALLECIDOS primary key (ID_FALLECIDO)
 )
 go
 
-alter table FALLECIDOS
-   add constraint PK_FALLECIDOS primary key (ID_FALLECIDO)
-go
-
+insert into FALLECIDOS values 
+(1,2,'Pedro Jimenez','av24')
+select * from FALLECIDOS
 /*==============================================================*/
 /* Index: ATIENDE_FK                                            */
 /*==============================================================*/
@@ -670,13 +298,16 @@ create table FAMILIAR (
    NOMBRES              varchar(50)          null,
    DIRECCION            varchar(50)          null,
    TELEFONO             varchar(50)          null,
-   CORREO               varchar(50)          null
+   CORREO               varchar(50)          null,
+   constraint PK_FAMILIAR primary key (ID_FAMILIAR)
 )
 go
+insert into FAMILIAR values 
+(1,1,1,'Camilo Cesto','calle 110',09993939,'cesto@gmail.com'),
+(2,1,0,'Emilia Loor','av 5 junio',09383737,'loor@gmail.com')
 
-alter table FAMILIAR
-   add constraint PK_FAMILIAR primary key (ID_FAMILIAR)
-go
+
+select * FROM FAMILIAR
 
 /*==============================================================*/
 /* Index: POSEE_FK                                              */
@@ -707,14 +338,20 @@ create table MEDICO (
    TITULO               varchar(50)          null,
    FECHA_INGRESO        datetime             null,
    DIRECCION            varchar(50)          null,
-   TELEFONO             varchar(10)          null
+   TELEFONO             varchar(10)          null,
+   constraint PK_MEDICO primary key (ID_MEDICO)
 )
 go
+insert into MEDICO values (1,'Alberto Gomez','Medico',2010,'calle 14', 0987656755),
+(2,'Alberto Gomez','Enfermero',2012,'calle 14', 0987656755),(3,'Elias Martinez','Medico',2010,'calle 14', 0987656755),
+(4,'Ramon Cañar ','Medico',2012,'calle 14', 09872113355),(5,'Jaime Perez','Medico',2010,'calle 14', 0987656755),
+(6,'Melissa Lopez','Enfermera',2010,'calle 14', 0987373755)
 
-alter table MEDICO
-   add constraint PK_MEDICO primary key (ID_MEDICO)
-go
+select * from MEDICO
+SELECT COUNT(*) FROM MEDICO
+SELECT COUNT(*) FROM ANCIANO
 
+select * from MEDICO
 /*==============================================================*/
 /* Table: PAGOS                                                 */
 /*==============================================================*/
@@ -723,15 +360,23 @@ create table PAGOS (
    ID_FAMILIAR          int                  null,
    ID_ASILO             int                  null,
    ID_BENEFICA          int                  null,
-   FECHA                datetime             null,
+   FECHA                date            null,
    TIPO_PAGO            varchar(50)          null,
-   TOTAL_PAGO           money                null
+   TOTAL_PAGO           money                null,
+   constraint PK_PAGOS primary key (ID_PAGO)
 )
-go
 
-alter table PAGOS
-   add constraint PK_PAGOS primary key (ID_PAGO)
-go
+
+insert into pagos values 
+(1,3,1,2,2021-07-09,'efectivo',500),
+(2,2,1,1,12-07-2021 ,'tarjeta',500),
+(3,3,1,1,12-11-2019,'transferencia',500),
+(4,4,1,2,5-02-2021,'efectivo',500)
+
+
+select * from PAGOS
+
+
 
 /*==============================================================*/
 /* Index: PAGA_FK                                               */
@@ -772,14 +417,29 @@ create table PERSONAL_DIETA (
    TITULO               varchar(50)          null,
    FECHA_INGRESO        datetime             null,
    DIRECCION            varchar(50)          null,
-   TELEFONO             varchar(50)          null
+   TELEFONO             varchar(50)          null,
+   constraint PK_PERSONAL_DIETA primary key (ID_DIETA)
 )
 go
+insert into PERSONAL_DIETA values 
+(1,'julio intriago', 'nutricionista',2015-06-12,'calle 311',0983838383),
+(2,'julio intriago', 'nutricionista',2018-07-10,'calle 10 av 12',0983838383)
 
-alter table PERSONAL_DIETA
-   add constraint PK_PERSONAL_DIETA primary key (ID_DIETA)
-go
+SELECT * FROM PERSONAL_DIETA
+UPDATE PERSONAL_DIETA 
+    SET NOMBRE = 'Smith Cañar'
+    WHERE ID_DIETA= 2
 
+	    
+
+--------------------------------------------------------------------------------------------------------------
+insert into ASO_BENEFICA values 
+(1,'Carita de Dios',500,'caritadios@gmail.com','calle 13'),
+(2,'Albergue Maria Jose',500,'albergue@gmail.com','calle 11'),
+(3,'Ultimos dias',500,'ultimos_dias@gmail.com','av214')
+
+
+select * from ASO_BENEFICA
 alter table ACTIVIDAD
    add constraint FK_ACTIVIDA_ASIGNA_ESPECIAL foreign key (ID_ESPECIALISTA)
       references ESPECIALISTA (ID_ESPECIALISTA)
@@ -789,6 +449,7 @@ alter table ACTIVIDAD
    add constraint FK_ACTIVIDA_PARTICIPA_ANCIANO foreign key (ID_ASILO)
       references ANCIANO (ID_ASILO)
 go
+
 
 alter table ANCIANO
    add constraint FK_ANCIANO_ATENDIDO_MEDICO foreign key (ID_MEDICO)

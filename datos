@@ -1,0 +1,526 @@
+/*==============================================================*/
+/* Table: ACTIVIDAD                                             */
+/*==============================================================*/
+create table ACTIVIDAD (
+   ID_ENTRETENIMIENTO   int                  not null,
+   ID_ASILO             int                  null,
+   ID_ESPECIALISTA      int                  null,
+   NOMBRE_ACTIVIDAD     varchar(50)          null,
+   HORA_INICIO          time             null,
+   HORA_FIN             time             null,
+   TIPO                 varchar(50)          null,
+   constraint PK_ACTIVIDAD primary key (ID_ENTRETENIMIENTO)
+)
+go
+SELECT * FROM ACTIVIDAD
+insert into ACTIVIDAD values 
+(1,1,1,'Bingo',8-11,11:00,'individual')
+------------------------------------------------------
+SELECT * FROM ANCIANO
+SELECT * FROM ESTANCIA
+
+,
+/*==============================================================*/
+/* Index: PARTICIPA_FK                                          */
+/*==============================================================*/
+
+
+
+
+create nonclustered index PARTICIPA_FK on ACTIVIDAD (ID_ASILO ASC)
+go
+
+/*==============================================================*/
+/* Index: ASIGNA_FK                                             */
+/*==============================================================*/
+
+
+
+
+create nonclustered index ASIGNA_FK on ACTIVIDAD (ID_ESPECIALISTA ASC)
+go
+
+/*==============================================================*/
+/* Table: ANCIANO                                               */
+/*==============================================================*/
+create table ANCIANO (
+   ID_ASILO             int                  not null,
+   ASI_ID_ASILO         int                  null,
+   CON_ID_DIETA         int                  null,
+   ID_ESTANCIA          int                  not null,
+   ID_MEDICO            int                  null,
+   NOMBRES              varchar(50)          null,
+   EDAD                 varchar(50)          null,
+   FECHA_INGRESO        date             null,
+   constraint PK_ANCIANO primary key (ID_ASILO)
+)
+go
+Select * from ANCIANO
+insert into ANCIANO values 
+(1,1,1,1,1,'Emilio Garcia',60,12-02-2019),
+(2,1,1,'Manuel Cañar',64,1-20-2020),
+(3,1,1,'Jaime Perez',72,2-1-20),
+(4,1,2,'Miguel Lopez',65,2-7-2020),
+(5,1,3,'Alexis Mieles',75,12-02-2015),
+(6,1,3,'Caren Gomez',60,12-02-2018),
+(7,1,5,'Emilio Gomez',72,12-05-2016),
+(8,1,5,'Carlos Uribe',65,12-02-2019),
+(9,1,2,'Roberto Cabrera',60,02-06-2017),
+(10,1,3,'Santiago Lopez',72,05-07-2016),
+(11,1,2,'Patricia Rodriguez',80,06-02-2015)
+
+/*==============================================================*/
+/* Index: TIENE_FK                                              */
+/*==============================================================*/
+
+
+
+
+create nonclustered index TIENE_FK on ANCIANO (ASI_ID_ASILO ASC)
+go
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_7_FK                                     */
+/*==============================================================*/
+
+
+
+
+create nonclustered index RELATIONSHIP_7_FK on ANCIANO (CON_ID_DIETA ASC)
+go
+
+/*==============================================================*/
+/* Index: PUEDE2_FK                                             */
+/*==============================================================*/
+
+
+
+
+create nonclustered index PUEDE2_FK on ANCIANO (ID_ESTANCIA ASC)
+go
+
+/*==============================================================*/
+/* Index: ATENDIDO_FK                                           */
+/*==============================================================*/
+
+
+
+
+create nonclustered index ATENDIDO_FK on ANCIANO (ID_MEDICO ASC)
+go
+
+/*==============================================================*/
+/* Table: ASILO                                                 */
+/*==============================================================*/
+create table ASILO (
+   ID_ASILO             int                  not null,
+   NOMBRE               varchar(50)          null,
+   CORREO               varchar(50)          null,
+   TELEFONO             varchar(10)          null,
+   constraint PK_ASILO primary key (ID_ASILO)
+)
+go
+
+insert into ASILO values 
+(1,'Fundacion Cotolego','fundacion@gmail.com',098636363)
+
+select * from ASILO
+/*==============================================================*/
+/* Table: ASO_BENEFICA                                          */
+/*==============================================================*/
+create table ASO_BENEFICA (
+   ID_BENEFICA          int                  not null,
+   NOMBRE               varchar(50)          null,
+   PAGO                 money                null,
+   CORREO               varchar(50)          null,
+   DIRECCION            varchar(50)          null,
+   constraint PK_ASO_BENEFICA primary key (ID_BENEFICA)
+)
+go
+
+insert into ASO_BENEFICA values 
+(1,'Caritas del Señor', 200,'carita@gmail.com','calle 21'),
+(2,'Cotalego', 200,'cotalego@gmail.com','Los Geranios calle brazil')
+
+
+
+
+select * from ASO_BENEFICA
+
+/*==============================================================*/
+/* Table: CONTROL_DIETA                                         */
+/*==============================================================*/
+create table CONTROL_DIETA (
+   ID_DIETA             int                  not null,
+   PER_ID_DIETA         int                  null,
+   PROTEINA_BAJA        varchar(50)          null,
+   PROTEINA_ATA         varchar(50)          null,
+   CARBOHIDRATOS        varchar(50)          null,
+   DIETA_ALCALINA       varchar(50)          null,
+   DIETA_DETOX          varchar(50)          null,
+   constraint PK_CONTROL_DIETA primary key (ID_DIETA)
+)
+go
+insert into CONTROL_DIETA values 
+(2,2,'Poca sal y verduras ','Pescado, carnes','Espaguetis, pastas','poco arroz','No alimentos pesados'),
+(3,3,'Poca sal y verduras ','Pescado, carnes','Espaguetis, pastas','poco arroz','No alimentos pesados'),
+(4,4,'Poca sal y verduras ','Pescado, carnes','Espaguetis, pastas','poco arroz','No alimentos pesados')
+
+
+select * from CONTROL_DIETA
+
+/*==============================================================*/
+/* Index: REALIZA_FK                                            */
+/*==============================================================*/
+
+
+
+
+create nonclustered index REALIZA_FK on CONTROL_DIETA (PER_ID_DIETA ASC)
+go
+
+/*==============================================================*/
+/* Table: ESPECIALISTA                                          */
+/*==============================================================*/
+create table ESPECIALISTA (
+   ID_ESPECIALISTA      int                  not null,
+   NOMBRE               varchar(50)          null,
+   TITULO               varchar(50)          null,
+   FECHA_INGRESO        datetime            null,
+   DIRECCION            varchar(50)          null,
+   TELEFONO             varchar(10)          null,
+   constraint PK_ESPECIALISTA primary key (ID_ESPECIALISTA)
+)
+go
+insert into ESPECIALISTA values 
+
+(3,' Jaime Chila','enfermero',2019-04-03 ,'calle Garcia',099444939),
+(4,'Luis Ernesto','odontologo',2016-07-02 ,'calle 10',032224939),
+(5,'Mauro Loor','enfermero',2014-04-02 ,'calle 110',09557839)
+
+
+
+select * from ESPECIALISTA
+/*==============================================================*/
+/* Table: ESTANCIA                                              */
+/*==============================================================*/
+create table ESTANCIA (
+   ID_ESTANCIA          int                  not null,
+   ID_ASILO             int                  null,
+   ANC_ID_ASILO         int                  not null,
+   ID_BENEFICA          int                  null,
+   ID_FAMILIAR          int                  null,
+   NOMBRE_FAMILIAR      varchar(50)          null,
+   TELEFONO_FAMILIAR    varchar(10)          null,
+   FICHA                varchar(50)          null,
+   CONDICIONES          varchar(50)          null,
+   constraint PK_ESTANCIA primary key (ID_ESTANCIA)
+)
+go
+insert into ESTANCIA values 
+(1,1,3,1,2,'Emilio Garcia',03838383883,'si','usa silla de ruedas')
+
+
+select * from ESTANCIA 
+
+/*==============================================================*/
+/* Index: REGISTRA_FK                                           */
+/*==============================================================*/
+
+
+
+
+create nonclustered index REGISTRA_FK on ESTANCIA (ID_ASILO ASC)
+go
+
+/*==============================================================*/
+/* Index: PUEDE_FK                                              */
+/*==============================================================*/
+
+
+
+
+create nonclustered index PUEDE_FK on ESTANCIA (ANC_ID_ASILO ASC)
+go
+
+/*==============================================================*/
+/* Index: LLEVA_FK                                              */
+/*==============================================================*/
+
+
+
+
+create nonclustered index LLEVA_FK on ESTANCIA (ID_BENEFICA ASC)
+go
+
+/*==============================================================*/
+/* Index: LLEVAR_FK                                             */
+/*==============================================================*/
+
+
+
+
+create nonclustered index LLEVAR_FK on ESTANCIA (ID_FAMILIAR ASC)
+go
+
+/*==============================================================*/
+/* Table: FALLECIDOS                                            */
+/*==============================================================*/
+create table FALLECIDOS (
+   ID_FALLECIDO         int                  not null,
+   ID_MEDICO            int                  null,
+   NOMBRE               varchar(50)          null,
+   DESCRIPCION          varchar(50)          null,
+   constraint PK_FALLECIDOS primary key (ID_FALLECIDO)
+)
+go
+
+insert into FALLECIDOS values 
+(1,2,'Pedro Jimenez','av24')
+select * from FALLECIDOS
+/*==============================================================*/
+/* Index: ATIENDE_FK                                            */
+/*==============================================================*/
+
+
+
+
+create nonclustered index ATIENDE_FK on FALLECIDOS (ID_MEDICO ASC)
+go
+
+/*==============================================================*/
+/* Table: FAMILIAR                                              */
+/*==============================================================*/
+create table FAMILIAR (
+   ID_FAMILIAR          int                  not null,
+   ID_ASILO             int                  null,
+   ID_FALLECIDO         int                  null,
+   NOMBRES              varchar(50)          null,
+   DIRECCION            varchar(50)          null,
+   TELEFONO             varchar(50)          null,
+   CORREO               varchar(50)          null,
+   constraint PK_FAMILIAR primary key (ID_FAMILIAR)
+)
+go
+insert into FAMILIAR values 
+(1,1,2,'Camilo Cesto','calle 110',09993939,'cesto@gmail.com'),
+
+
+SELECT * FROM FAMILIAR
+
+/*==============================================================*/
+/* Index: POSEE_FK                                              */
+/*==============================================================*/
+
+
+
+
+create nonclustered index POSEE_FK on FAMILIAR (ID_ASILO ASC)
+go
+
+/*==============================================================*/
+/* Index: INFORMA_FK                                            */
+/*==============================================================*/
+
+
+
+
+create nonclustered index INFORMA_FK on FAMILIAR (ID_FALLECIDO ASC)
+go
+
+/*==============================================================*/
+/* Table: MEDICO                                                */
+/*==============================================================*/
+create table MEDICO (
+   ID_MEDICO            int                  not null,
+   NOMBRE               varchar(50)          null,
+   TITULO               varchar(50)          null,
+   FECHA_INGRESO        datetime             null,
+   DIRECCION            varchar(50)          null,
+   TELEFONO             varchar(10)          null,
+   constraint PK_MEDICO primary key (ID_MEDICO)
+)
+go
+insert into MEDICO values (1,'Alberto Gomez','Medico',2010,'calle 14', 0987656755),
+(2,'Alberto Gomez','Enfermero',2012,'calle 14', 0987656755),(3,'Elias Martinez','Medico',2010,'calle 14', 0987656755),
+(4,'Ramon Cañar ','Medico',2012,'calle 14', 09872113355),(5,'Jaime Perez','Medico',2010,'calle 14', 0987656755),
+(6,'Melissa Lopez','Enfermera',2010,'calle 14', 0987373755)
+
+select * from MEDICO
+SELECT COUNT(*) FROM MEDICO
+SELECT COUNT(*) FROM ANCIANO
+
+select * from ANCIANO
+/*==============================================================*/
+/* Table: PAGOS                                                 */
+/*==============================================================*/
+create table PAGOS (
+   ID_PAGO              int                  not null,
+   ID_FAMILIAR          int                  null,
+   ID_ASILO             int                  null,
+   ID_BENEFICA          int                  null,
+   FECHA                date            null,
+   TIPO_PAGO            varchar(50)          null,
+   TOTAL_PAGO           money                null,
+   constraint PK_PAGOS primary key (ID_PAGO)
+)
+
+
+insert into pagos values 
+(1,1,1,1,2021-07-09,'efectivo',500),
+(2,2,1,1,12-07-2021 ,'tarjeta',500),
+(3,3,1,1,12-11-2019,'transferencia',500),
+(4,4,1,2,5-02-2021,'efectivo',500)
+
+
+select * from PAGOS
+
+
+
+/*==============================================================*/
+/* Index: PAGA_FK                                               */
+/*==============================================================*/
+
+
+
+
+create nonclustered index PAGA_FK on PAGOS (ID_FAMILIAR ASC)
+go
+
+/*==============================================================*/
+/* Index: REALIZAN_FK                                           */
+/*==============================================================*/
+
+
+
+
+create nonclustered index REALIZAN_FK on PAGOS (ID_ASILO ASC)
+go
+
+/*==============================================================*/
+/* Index: APOYA_FK                                              */
+/*==============================================================*/
+
+
+
+
+create nonclustered index APOYA_FK on PAGOS (ID_BENEFICA ASC)
+go
+
+/*==============================================================*/
+/* Table: PERSONAL_DIETA                                        */
+/*==============================================================*/
+create table PERSONAL_DIETA (
+   ID_DIETA             int                  not null,
+   NOMBRE               varchar(50)          null,
+   TITULO               varchar(50)          null,
+   FECHA_INGRESO        datetime             null,
+   DIRECCION            varchar(50)          null,
+   TELEFONO             varchar(50)          null,
+   constraint PK_PERSONAL_DIETA primary key (ID_DIETA)
+)
+go
+insert into PERSONAL_DIETA values 
+(1,'julio intriago', 'nutricionista',2015-06-12,'calle 311',0983838383),
+(2,'julio intriago', 'nutricionista',2018-07-10,'calle 10 av 12',0983838383)
+
+SELECT * FROM PERSONAL_DIETA
+UPDATE PERSONAL_DIETA 
+    SET NOMBRE = 'Smith Cañar'
+    WHERE ID_DIETA= 2
+
+	    
+
+--------------------------------------------------------------------------------------------------------------
+insert into ASO_BENEFICA values 
+(1,'Carita de Dios',500,'caritadios@gmail.com','calle 13'),
+(2,'Albergue Maria Jose',500,'albergue@gmail.com','calle 11'),
+(3,'Ultimos dias',500,'ultimos_dias@gmail.com','av214')
+
+
+select * from ASO_BENEFICA
+alter table ACTIVIDAD
+   add constraint FK_ACTIVIDA_ASIGNA_ESPECIAL foreign key (ID_ESPECIALISTA)
+      references ESPECIALISTA (ID_ESPECIALISTA)
+go
+
+alter table ACTIVIDAD
+   add constraint FK_ACTIVIDA_PARTICIPA_ANCIANO foreign key (ID_ASILO)
+      references ANCIANO (ID_ASILO)
+go
+
+
+alter table ANCIANO
+   add constraint FK_ANCIANO_ATENDIDO_MEDICO foreign key (ID_MEDICO)
+      references MEDICO (ID_MEDICO)
+go
+
+alter table ANCIANO
+   add constraint FK_ANCIANO_PUEDE2_ESTANCIA foreign key (ID_ESTANCIA)
+      references ESTANCIA (ID_ESTANCIA)
+go
+
+alter table ANCIANO
+   add constraint FK_ANCIANO_RELATIONS_CONTROL_ foreign key (CON_ID_DIETA)
+      references CONTROL_DIETA (ID_DIETA)
+go
+
+alter table ANCIANO
+   add constraint FK_ANCIANO_TIENE_ASILO foreign key (ASI_ID_ASILO)
+      references ASILO (ID_ASILO)
+go
+
+alter table CONTROL_DIETA
+   add constraint FK_CONTROL__REALIZA_PERSONAL foreign key (PER_ID_DIETA)
+      references PERSONAL_DIETA (ID_DIETA)
+go
+
+alter table ESTANCIA
+   add constraint FK_ESTANCIA_LLEVA_ASO_BENE foreign key (ID_BENEFICA)
+      references ASO_BENEFICA (ID_BENEFICA)
+go
+
+alter table ESTANCIA
+   add constraint FK_ESTANCIA_LLEVAR_FAMILIAR foreign key (ID_FAMILIAR)
+      references FAMILIAR (ID_FAMILIAR)
+go
+
+alter table ESTANCIA
+   add constraint FK_ESTANCIA_PUEDE_ANCIANO foreign key (ANC_ID_ASILO)
+      references ANCIANO (ID_ASILO)
+go
+
+alter table ESTANCIA
+   add constraint FK_ESTANCIA_REGISTRA_ASILO foreign key (ID_ASILO)
+      references ASILO (ID_ASILO)
+go
+
+alter table FALLECIDOS
+   add constraint FK_FALLECID_ATIENDE_MEDICO foreign key (ID_MEDICO)
+      references MEDICO (ID_MEDICO)
+go
+
+alter table FAMILIAR
+   add constraint FK_FAMILIAR_INFORMA_FALLECID foreign key (ID_FALLECIDO)
+      references FALLECIDOS (ID_FALLECIDO)
+go
+
+alter table FAMILIAR
+   add constraint FK_FAMILIAR_POSEE_ANCIANO foreign key (ID_ASILO)
+      references ANCIANO (ID_ASILO)
+go
+
+alter table PAGOS
+   add constraint FK_PAGOS_APOYA_ASO_BENE foreign key (ID_BENEFICA)
+      references ASO_BENEFICA (ID_BENEFICA)
+go
+
+alter table PAGOS
+   add constraint FK_PAGOS_PAGA_FAMILIAR foreign key (ID_FAMILIAR)
+      references FAMILIAR (ID_FAMILIAR)
+go
+
+alter table PAGOS
+   add constraint FK_PAGOS_REALIZAN_ASILO foreign key (ID_ASILO)
+      references ASILO (ID_ASILO)
+go

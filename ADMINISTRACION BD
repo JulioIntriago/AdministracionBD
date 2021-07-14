@@ -1,0 +1,411 @@
+--Creacion Base de datos
+CREATE DATABASE BDAsilo;
+GO
+
+--Seleccionar BD a utilizar
+USE BDAsilo;
+GO
+
+--creacion tablas
+create table anciano (
+   idAnciano BIGINT IDENTITY (1,1),
+   cedula VARCHAR(10),
+   apellidos VARCHAR(50),
+   nombres VARCHAR(50),
+   edad INT,
+   CONSTRAINT anciano_pk PRIMARY KEY (idAnciano)
+);
+
+create table estancia (
+	idEstancia BIGINT IDENTITY(1,1),
+	idAncianoEtc BIGINT,
+	fechaIngreso DATE,
+	apellidosEmisor VARCHAR(50),
+	nombresEmisor VARCHAR(50),	
+	ficha INT,
+	condicionSalud varchar(100),
+	CONSTRAINT estancia_pk PRIMARY KEY (idEstancia),
+	CONSTRAINT ancianoE_fk FOREIGN KEY (idAncianoEtc) REFERENCES anciano(idAnciano)
+);
+
+create table referenciaFml(
+	idReferenciaFml BIGINT IDENTITY(1,1),
+	cedula VARCHAR(10) UNIQUE,
+	apellidos VARCHAR(50),
+	nombres VARCHAR(50),
+	parentesco VARCHAR(50),
+	direccion VARCHAR(70),
+	idAncianoRfrcF BIGINT,
+	CONSTRAINT referenciafml_pk PRIMARY KEY (idReferenciaFml),
+	CONSTRAINT ancianoRfcFml_fk FOREIGN KEY (idAncianoRfrcF) REFERENCES anciano(idAnciano)
+);
+
+create table tipoEntretenimiento(
+	idTipoEtm BIGINT IDENTITY(1,1),
+	tipo VARCHAR(50),
+	CONSTRAINT tipoEtm_pk PRIMARY KEY (idTipoEtm)
+);
+
+create table especialista (
+	idEspecialista BIGINT IDENTITY(1,1),
+	apellidos VARCHAR(50),
+	nombres VARCHAR(50),
+	titulo VARCHAR(70), 
+	direccion VARCHAR(50),
+	telefono VARCHAR(10),
+	fechaIngreso DATE,
+	pago INT,
+	CONSTRAINT especialista_pk PRIMARY KEY (idEspecialista)
+);
+
+create table entretenimiento(
+	idEntretenimiento BIGINT IDENTITY(1,1),
+	idTipoEtmE BIGINT,
+	idEspecialistaE BIGINT,
+	descripcion VARCHAR(70),
+	horaInicio TIME,
+	horaFin TIME,
+	CONSTRAINT entretenimiento_pk PRIMARY KEY (idEntretenimiento),
+	CONSTRAINT tipoEtmE_fk FOREIGN KEY (idTipoEtmE) REFERENCES tipoEntretenimiento(idTipoEtm),
+	CONSTRAINT especialistaE_fk FOREIGN KEY (idEspecialistaE) REFERENCES especialista(idEspecialista)
+);
+
+
+create table ancianoEtmt(
+	idAncianioEtm BIGINT,
+	idEntretenimientoEtm BIGINT,
+	CONSTRAINT ancianoEtm_fk FOREIGN KEY (idAncianioEtm) REFERENCES anciano(idAnciano),
+	CONSTRAINT entretenimientoEtm_fk FOREIGN KEY (idEntretenimientoEtm) REFERENCES entretenimiento(idEntretenimiento)
+
+);
+
+create table tipoDieta(
+	idTipoDieta BIGINT IDENTITY(1,1),
+	tipo VARCHAR(70),
+	CONSTRAINT tipoDieta_pk PRIMARY KEY (idTipoDieta)
+);
+
+create table controlDieta(
+	idTipoDCD BIGINT,
+	idAncianoCD BIGINT,
+	cantidadDiaria VARCHAR(50),
+	CONSTRAINT tipoDCD_fk FOREIGN KEY (idTipoDCD) REFERENCES tipoDieta(idTipoDieta),
+	CONSTRAINT ancianoCD_fk FOREIGN KEY (idAncianoCD) REFERENCES anciano(idAnciano)
+);
+
+create table medico(
+	idMedico BIGINT IDENTITY(1,1),
+	apellidos VARCHAR(50),
+	nombres VARCHAR(50),
+	titulo VARCHAR(70),
+	telefono VARCHAR(10),
+    direccion VARCHAR(50),
+	fechaIngreso DATE,	
+	CONSTRAINT medico_pk PRIMARY KEY (idMedico)
+);
+
+create table controlMedico(
+	idMedicoCM BIGINT,
+	idAncianoCM BIGINT,
+	periodo VARCHAR(50),
+	CONSTRAINT medicoCM_fk FOREIGN KEY (idMedicoCM) REFERENCES medico(idMedico),
+	CONSTRAINT ancianoCM_fk FOREIGN KEY (idAncianoCM) REFERENCES anciano(idAnciano)
+);
+
+create table insidente(
+	idInsidente BIGINT IDENTITY(1,1),
+	idAncianoIndt BIGINT,
+	descripcion VARCHAR(100),
+	fecha DATE,
+	CONSTRAINT insidente_pk PRIMARY KEY (idInsidente),
+	CONSTRAINT ancianoIndt_fk FOREIGN KEY (idAncianoIndt) REFERENCES anciano(idAnciano)
+);
+
+create table tipoPago(
+	idTipoP BIGINT IDENTITY(1,1),
+	tipo VARCHAR(50),
+	CONSTRAINT tipoP_pk PRIMARY KEY (idTipoP)
+);
+
+create table pagoM(
+	idPagoM BIGINT IDENTITY(1,1),
+	idAncianoPM BIGINT,
+	idTipoPPM BIGINT,
+	cantidad DECIMAL(5,2),
+	fecha DATE,
+	CONSTRAINT pagoM_pk PRIMARY KEY (idPagoM),
+	CONSTRAINT ancianoPM_fk FOREIGN KEY (idAncianoPM) REFERENCES anciano(idAnciano),
+	CONSTRAINT tipoPPM_fk FOREIGN KEY (idTipoPPM) REFERENCES tipoPago(idTipoP)
+);
+
+create table fallecimiento(
+	idFallecimiento BIGINT IDENTITY(1,1),
+	idAncianoF BIGINT,
+	idMedicoFE BIGINT,
+	fecha DATE,
+	descripcion VARCHAR(100),
+	CONSTRAINT fallecimiento_pk PRIMARY KEY (idFallecimiento),
+	CONSTRAINT ancianoF_fk FOREIGN KEY (idAncianoF) REFERENCES anciano(idAnciano),
+	CONSTRAINT medicoFE_fk FOREIGN KEY (idMedicoFE) REFERENCES medico(idMedico)
+);
+
+--inserciones tablas
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('1315446678', 'Avila Centeno', 'Manuel Antonio', 80);;
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('0944656678', 'Mero Jimenez', 'Jose Antonio', 65);
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('1399134678', 'Avila Centeno', 'Ana Maria', 68);
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('1315112044', 'Cueva Benitez', 'Jose Manuel', 73);
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('0547946678', 'Mero Mero', 'Francisco Javier', 81);
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('0515116228', 'Mero Mero', 'Julia Francisco', 76);
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('1221446458', 'Cueva Avila', 'Juan Carlos', 82);
+INSERT INTO anciano(cedula, apellidos, nombres, edad)
+VALUES ('1456346648', 'Pin Pin', 'Johan Alexander', 88);
+SELECT * FROM anciano;
+
+INSERT INTO	especialista(apellidos, nombres, titulo, direccion, telefono, fechaIngreso, pago)
+VALUES ('Pin Cueva', 'Bryan Alexander', 'Enfermero', 'Avenida 3 y calle 102','0935441269', '2020-05-20', 420);
+INSERT INTO	especialista(apellidos, nombres, titulo, direccion, telefono, fechaIngreso, pago)
+VALUES ('Delgado Prado', 'Hector Alexander', 'Bailador', 'Avenida 22 y calle 8', '0977894562', '2020-05-27', 420);
+INSERT INTO	especialista(apellidos, nombres, titulo, direccion, telefono, fechaIngreso, pago)
+VALUES ('Anchundia Parrales', 'Mario Julio', 'Enfermero', 'Avenida 3 y calle Juan Ibarra','0944123674', '2020-06-01', 420);
+INSERT INTO	especialista(apellidos, nombres, titulo, direccion, telefono, fechaIngreso, pago)
+VALUES ('Cueva Arcentales', 'Cesar Ernesto', 'Acvividades Recreacionales', 'Avenida 3 y calle 102', '0911466712', '2020-06-12', 420);
+INSERT INTO	especialista(apellidos, nombres, titulo, direccion, telefono, fechaIngreso, pago)
+VALUES ('Intriago Velez', 'Julian Romario', 'Enfermero', 'Avenida 3 y calle Isidro', '0993120045', '2020-06-13', 420);
+SELECT * FROM especialista;
+
+INSERT INTO tipoEntretenimiento(tipo) VALUES('Grupal');
+INSERT INTO tipoEntretenimiento(tipo) VALUES('Individual');
+SELECT * FROM tipoEntretenimiento;
+
+INSERT INTO entretenimiento(idTipoEtmE, idEspecialistaE, descripcion, horaInicio, horaFin)
+VALUES (1, 1, 'Terapia cognitiva', '08:30', '9:45');
+INSERT INTO entretenimiento(idTipoEtmE, idEspecialistaE, descripcion, horaInicio, horaFin)
+VALUES (2, 2, 'Bailoterapia', '10:00', '10:45');
+INSERT INTO entretenimiento(idTipoEtmE, idEspecialistaE, descripcion, horaInicio, horaFin)
+VALUES (2, 3, 'Actividades Manuales', '14:30', '15:45');
+INSERT INTO entretenimiento(idTipoEtmE, idEspecialistaE, descripcion, horaInicio, horaFin)
+VALUES (1, 4, 'Bingo', '16:00', '16:55');
+SELECT * FROM entretenimiento;
+
+INSERT INTO ancianoEtmt VALUES (1,1);
+INSERT INTO ancianoEtmt VALUES (1,2);
+INSERT INTO ancianoEtmt VALUES (1,3);
+INSERT INTO ancianoEtmt VALUES (1,4);
+INSERT INTO ancianoEtmt VALUES (2,1);
+INSERT INTO ancianoEtmt VALUES (2,2);
+INSERT INTO ancianoEtmt VALUES (2,4);
+INSERT INTO ancianoEtmt VALUES (3,1);
+INSERT INTO ancianoEtmt VALUES (3,2);
+INSERT INTO ancianoEtmt VALUES (3,3);
+INSERT INTO ancianoEtmt VALUES (3,4);
+INSERT INTO ancianoEtmt VALUES (4,1);
+INSERT INTO ancianoEtmt VALUES (4,3);
+INSERT INTO ancianoEtmt VALUES (4,4);
+INSERT INTO ancianoEtmt VALUES (5,1);
+INSERT INTO ancianoEtmt VALUES (5,2);
+INSERT INTO ancianoEtmt VALUES (5,3);
+INSERT INTO ancianoEtmt VALUES (5,4);
+INSERT INTO ancianoEtmt VALUES (6,1);
+INSERT INTO ancianoEtmt VALUES (6,3);
+INSERT INTO ancianoEtmt VALUES (6,4);
+INSERT INTO ancianoEtmt VALUES (7,1);
+INSERT INTO ancianoEtmt VALUES (7,2);
+INSERT INTO ancianoEtmt VALUES (7,3);
+INSERT INTO ancianoEtmt VALUES (8,1);
+INSERT INTO ancianoEtmt VALUES (8,2);
+INSERT INTO ancianoEtmt VALUES (8,3);
+INSERT INTO ancianoEtmt VALUES (8,4);
+SELECT * FROM ancianoEtmt;
+
+INSERT INTO insidente(idAncianoIndt, descripcion, fecha) 
+VALUES (2, 'Resbalon', '2020-02-15');
+INSERT INTO insidente(idAncianoIndt, descripcion, fecha) 
+VALUES (5, 'Caida', '2020-03-08');
+INSERT INTO insidente(idAncianoIndt, descripcion, fecha) 
+VALUES (6, 'Resbalon', '2020-03-15');
+SELECT * FROM insidente;
+
+INSERT INTO tipoPago(tipo) VALUES ('Efectivo');
+INSERT INTO tipoPago(tipo) VALUES ('Transferencia Bancaria');
+INSERT INTO tipoPago(tipo) VALUES ('Tarjeta Debito');
+INSERT INTO tipoPago(tipo) VALUES ('Aso. Fundacion');
+SELECT * FROM tipoPago;
+
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (1,1,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (2,3,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (3,1,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (4,2,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (5,1,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (6,4,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (7,2,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (8,4,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (1,1,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (2,3,250,'2020-01-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (3,1,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (4,2,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (5,1,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (6,4,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (7,2,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (8,4,250,'2020-02-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (1,1,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (2,3,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (3,1,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (4,2,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (5,1,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (6,4,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (7,2,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (8,4,250,'2020-03-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (1,1,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (2,3,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (3,1,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (4,2,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (5,1,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (6,4,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (7,2,250,'2020-04-15');
+INSERT INTO pagoM(idAncianoPM, idTipoPPM, cantidad, fecha)
+VALUES (8,4,250,'2020-04-15');
+SELECT * FROM pagoM;
+
+INSERT INTO tipoDieta(tipo) VALUES('Proteina Alta');
+INSERT INTO tipoDieta(tipo) VALUES('Proteina Media');
+INSERT INTO tipoDieta(tipo) VALUES('Proteina Baja');
+INSERT INTO tipoDieta(tipo) VALUES('Carbohidratos');
+INSERT INTO tipoDieta(tipo) VALUES('Dieta Alcalina');
+INSERT INTO tipoDieta(tipo) VALUES('Dieta Detox');
+SELECT * FROM tipoDieta;
+
+INSERT INTO medico(apellidos, nombres, titulo, telefono, direccion, fechaIngreso)
+VALUES('Perez Delgado', 'Francisco Carlos', 'Cardiologo', '0935447812', 'Manta, calle 20 y aven. 14', '2020-01-02');
+INSERT INTO medico(apellidos, nombres, titulo, telefono, direccion, fechaIngreso)
+VALUES('Vilela Parrales', 'Juan Jose', 'Diabetologo', '0966427741', 'Portoviejo, calle 8 y aven. 3', '2020-01-08');
+INSERT INTO medico(apellidos, nombres, titulo, telefono, direccion, fechaIngreso)
+VALUES('Delgado Cueva', 'Jose Bryan', 'Urologo', '0934119946','Montecristi, calle 11 y aven. 1', '2020-01-08');
+INSERT INTO medico(apellidos, nombres, titulo, telefono, direccion, fechaIngreso)
+VALUES('Franco Mero', 'Ulices Alexander', 'Medicina General', '0966113334', 'Manta, calle Hidrovo y aven. 14', '2020-01-09');
+SELECT * FROM medico;
+
+INSERT INTO controlDieta VALUES(2,1,'250mg');
+INSERT INTO controlDieta VALUES(5,2,'125mg');
+INSERT INTO controlDieta VALUES(1,3,'150mg');
+INSERT INTO controlDieta VALUES(4,4,'275mg');
+INSERT INTO controlDieta VALUES(2,5,'300mg');
+INSERT INTO controlDieta VALUES(3,6,'175mg');
+INSERT INTO controlDieta VALUES(4,7,'120mg');
+INSERT INTO controlDieta VALUES(6,8,'220mg');
+SELECT * FROM controlDieta;
+
+
+INSERT INTO controlMedico VALUES(1,1,'Semanalmente');
+INSERT INTO controlMedico VALUES(3,1,'Mensualmente');
+INSERT INTO controlMedico VALUES(4,1,'Diariamente');
+INSERT INTO controlMedico VALUES(2,2,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,2,'Diariamente');
+INSERT INTO controlMedico VALUES(1,3,'Semanalmente');
+INSERT INTO controlMedico VALUES(2,3,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,3,'Diariamente');
+INSERT INTO controlMedico VALUES(1,4,'Semanalmente');
+INSERT INTO controlMedico VALUES(2,4,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,4,'Diariamente');
+INSERT INTO controlMedico VALUES(2,5,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,5,'Diariamente');
+INSERT INTO controlMedico VALUES(2,6,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,6,'Diariamente');
+INSERT INTO controlMedico VALUES(1,7,'Semanalmente');
+INSERT INTO controlMedico VALUES(2,7,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,7,'Diariamente');
+INSERT INTO controlMedico VALUES(1,8,'Semanalmente');
+INSERT INTO controlMedico VALUES(2,8,'Semanalmente');
+INSERT INTO controlMedico VALUES(3,8,'Semanalmente');
+INSERT INTO controlMedico VALUES(4,8,'Diariamente');
+SELECT * FROM controlMedico;
+
+
+INSERT INTO fallecimiento(idAncianoF, idMedicoFE, fecha, descripcion)
+VALUES(2, 4,'2020-07-07', 'Paro cardiaco');
+INSERT INTO fallecimiento(idAncianoF, idMedicoFE, fecha, descripcion)
+VALUES(8, 3,'2020-09-11', 'Insuficiencia urinaria');
+SELECT * FROM fallecimiento;
+
+
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (1,'2020-01-03', 'Avila Cueva', 'Juan Hidrovo', 1, 'Buena');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (2,'2020-01-03', 'Mero Vera', 'Antonio Jesus', 1, 'Regular');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (3,'2020-01-05', 'Avila Zambrano', 'Maria de los Angeles', 0, 'Buena');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (4,'2020-01-05', 'Cueva Parraga', 'Alexander Hector', 1, 'Buena');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (5,'2020-01-06', 'Mero Cueva', 'Manuel Anthony', 0, 'Buena');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (6,'2020-01-07', 'Mero Espinal', 'Josue Ernesto', 1, 'Regular');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (7,'2020-01-07', 'Cueva Mero', 'Luis Doel', 0, 'Buena');
+INSERT INTO estancia(idAncianoEtc, fechaIngreso, apellidosEmisor, nombresEmisor, ficha, condicionSalud)
+VALUES (8,'2020-01-08', 'Pin Quijije', 'Wilder Jose', 1, 'Casi Mala');
+SELECT * FROM estancia;
+GO
+
+--Primera Consulta
+SELECT m.nombres, m.titulo, COUNT(cm.idAncianoCM) AS numeroPacientes FROM controlMedico AS cm
+INNER JOIN medico AS m ON cm.idMedicoCM = m.idMedico
+GROUP BY m.nombres, m.titulo ORDER BY m.nombres ASC;
+
+--Segunda Consulta
+SELECT apellidos, COUNT(apellidos) AS coincidencias, 'Hermanos' AS familiariadad FROM
+(SELECT apellidos FROM anciano GROUP BY apellidos HAVING COUNT(apellidos)>=2) AS familiariadad2 GROUP BY apellidos;
+
+--Tercera Consulta
+select rangoEdad, COUNT(edad) as cantidadAncianos
+    from (
+    select case  
+        when edad between 61 and 70 then 'a) 61 a 70'
+        when edad between 71 and 80 then 'b) 71 a 80'
+		when edad between 81 and 90 then 'b) 81 a 90'
+        else 'c) más de 91' end as rangoEdad,
+        edad
+		from (
+		select edad from anciano) res) anciano group by rangoEdad order by rangoEdad;
+
+--Cuarta Consulta
+SELECT td.tipo AS tipoDieta, COUNT(idAncianoCD) AS numeroAncianos FROM controlDieta AS cd
+INNER JOIN tipoDieta AS td ON td.idTipoDieta = cd.idTipoDCD
+GROUP BY td.tipo ORDER BY td.tipo ASC;

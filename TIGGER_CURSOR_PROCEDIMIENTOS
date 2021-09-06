@@ -1,0 +1,173 @@
+USE BDAsilo;
+
+ALTER TABLE tipoDieta ADD precio NUMERIC(5,2);
+
+SELECT * FROM tipoDieta;
+
+UPDATE tipoDieta SET precio = 15 WHERE idTipoDieta =1;
+UPDATE tipoDieta SET precio = 12 WHERE idTipoDieta =2;
+UPDATE tipoDieta SET precio = 10 WHERE idTipoDieta =3;
+UPDATE tipoDieta SET precio = 13 WHERE idTipoDieta =4;
+UPDATE tipoDieta SET precio = 15 WHERE idTipoDieta =5;
+UPDATE tipoDieta SET precio = 11 WHERE idTipoDieta =6;
+GO
+
+-- TRIGGER
+CREATE TRIGGER aggDietaAcn
+ON controlDieta
+INSTEAD OF INSERT AS
+BEGIN
+	DECLARE @idAncianoB INT,
+	@idTipoDC INT,
+	@cantidadD VARCHAR(50),
+	@precioD NUMERIC(5,2),
+	@precioNP NUMERIC(5,2),
+	@acumulador NUMERIC(5,2)=0,
+	@pspAlmt NUMERIC(5,2)
+
+	SET @idAncianoB = (SELECT idAncianoCD FROM inserted)
+	SET @pspAlmt = (SELECT cantidad FROM pagoM WHERE idAncianoPM = 1 GROUP BY cantidad) * 0.3
+	SET @idTipoDC = (SELECT idTipoDCD FROM inserted)
+	SET @precioNP = (SELECT precio FROM tipoDieta WHERE idTipoDieta = @idTipoDC)
+	SET @cantidadD = (SELECT cantidadDiaria FROM inserted)
+
+	DECLARE vfcrPspDnr CURSOR SCROLL FOR
+		SELECT td.precio FROM controlDieta AS cd
+		INNER JOIN tipoDieta AS td ON cd.idTipoDCD = td.idTipoDieta WHERE idAncianoCD = @idAncianoB
+
+		OPEN vfcrPspDnr  
+		FETCH NEXT FROM vfcrPspDnr INTO @precioD
+		WHILE(@@FETCH_STATUS= 0)
+		BEGIN		
+			SET @acumulador = @acumulador + @precioD 
+			FETCH NEXT FROM vfcrPspDnr INTO @precioD
+		END
+		
+		SET @acumulador = @acumulador + @precioNP
+
+		IF @acumulador > @pspAlmt
+		BEGIN
+			ROLLBACK TRANSACTION
+			RAISERROR ('Pasa el 0.3 del dinero asignado, no se permite agregar dietas al anciano',-1,-1)
+		END
+		ELSE
+		BEGIN
+			INSERT INTO controlDieta VALUES (@idAncianoB, @idTipoDC, @cantidadD);
+		END
+
+		CLOSE vfcrPspDnr
+		DEALLOCATE vfcrPspDnr
+END
+
+--PRUEBAS Trigger
+UPDATE pagoM SET cantidad = 100 WHERE idAncianoPM = 1;
+
+INSERT INTO controlDieta(idTipoDCD, idAncianoCD, cantidadDiaria) VALUES (1, 1, '125mg');
+
+INSERT INTO controlDieta(idTipoDCD, idAncianoCD, cantidadDiaria) VALUES (1, 2, '105mg');
+
+SELECT * FROM controlDieta;
+GO
+
+--Procedimiento almacenado
+CREATE PROCEDURE infmDoctor (@apellidos VARCHAR(100), @nombres VARCHAR(100))
+AS
+	DECLARE @idMedicoB INT
+
+	SET @idMedicoB = (SELECT idMedico FROM medico WHERE apellidos =  @apellidos and nombres = @nombres)
+
+	SELECT m.apellidos +' '+ m.nombres AS Nombres, m.titulo, COUNT(cm.idAncianoCM) AS numeroPacientes FROM controlMedico AS cm
+		INNER JOIN medico AS m ON cm.idMedicoCM = m.idMedico
+		WHERE idMedico = @idMedicoB GROUP BY apellidos,nombres, titulo
+GO
+
+EXEC infmDoctor 'Perez Delgado', 'Francisco Carlos';
+EXEC infmDoctor 'Vilela Parrales', 'Juan Jose';
+GO
+
+--CURSOR dentro de un procedimiento almacenado y tabla temporal
+
+--Modificacion de tabla tipo dieta
+ALTER TABLE tipoDieta ADD idMedicoCD BIGINT;
+ALTER TABLE tipoDieta ADD CONSTRAINT fk_medicoCD FOREIGN KEY (idMedicoCD) REFERENCES medico(idMedico);
+
+UPDATE tipoDieta SET idMedicoCD = 1 WHERE idTipoDieta =1;
+UPDATE tipoDieta SET idMedicoCD = 2 WHERE idTipoDieta =2;
+UPDATE tipoDieta SET idMedicoCD = 3 WHERE idTipoDieta =3;
+UPDATE tipoDieta SET idMedicoCD = 4 WHERE idTipoDieta =4;
+UPDATE tipoDieta SET idMedicoCD = 1 WHERE idTipoDieta =5;
+UPDATE tipoDieta SET idMedicoCD = 2 WHERE idTipoDieta =6;
+GO
+
+
+CREATE PROCEDURE gncDPE (@apellidos VARCHAR(100), @nombres VARCHAR(100))
+AS
+	CREATE TABLE #InformacionVentas(
+		nombresCompletos VARCHAR(200),
+		numeroDietasEtbcd INT,
+		costoUnidadD DECIMAL(5,2),
+		valorVntsTotal DECIMAL(5,2)
+	);
+
+	DECLARE @idPersonaB INT,
+		@idMedicoD INT,
+		@idAncianoD INT,
+		@cmprIdAcn INT,
+		@precioD DECIMAL(5,2),
+		@contadorD NUMERIC = 1,
+		@acumuladorC DECIMAL(5,2) = 0
+
+		SET @idPersonaB = (SELECT idMedico FROM medico WHERE apellidos =  @apellidos and nombres = @nombres)
+
+	DECLARE datosInfmcCst CURSOR SCROLL FOR
+		SELECT m.idMedico, td.precio, cd.idTipoDCD FROM controlDieta AS cd
+		INNER JOIN tipoDieta AS td ON cd.idTipoDCD = td.idTipoDieta
+		INNER JOIN medico AS m ON td.idMedicoCD = m.idMedico
+		WHERE idMedico = @idPersonaB ORDER BY idTipoDCD
+
+		OPEN datosInfmcCst  
+		FETCH NEXT FROM datosInfmcCst INTO @idMedicoD ,@precioD, @idAncianoD
+		WHILE(@@FETCH_STATUS= 0)
+		BEGIN
+			IF @cmprIdAcn != @idAncianoD
+			BEGIN
+				SET @contadorD = @contadorD + 1				
+			END
+			SET @cmprIdAcn = @idAncianoD
+			SET @acumuladorC = @acumuladorC + @precioD
+			FETCH NEXT FROM datosInfmcCst INTO @idMedicoD ,@precioD, @idAncianoD
+		END
+		
+		INSERT INTO #InformacionVentas (nombresCompletos, numeroDietasEtbcd, costoUnidadD, valorVntsTotal)
+		VALUES (@nombres +' '+@apellidos, @contadorD, @precioD, @acumuladorC)
+	CLOSE datosInfmcCst
+	DEALLOCATE datosInfmcCst
+
+	SELECT * FROM #InformacionVentas;
+	DROP TABLE #InformacionVentas;
+GO
+--Prueba procedimiento
+EXEC gncDPE 'Perez Delgado', 'Francisco Carlos';
+
+GO
+
+
+--Agregacion de columna para ireport
+
+ALTER TABLE anciano ADD provinciaOrigen VARCHAR(100);
+
+UPDATE anciano SET provinciaOrigen = 'Manabi' WHERE idAnciano =1;
+UPDATE anciano SET provinciaOrigen = 'Esmeraldas' WHERE idAnciano =2;
+UPDATE anciano SET provinciaOrigen = 'Santa Elena' WHERE idAnciano =3;
+UPDATE anciano SET provinciaOrigen = 'Manabi' WHERE idAnciano =4;
+UPDATE anciano SET provinciaOrigen = 'Guayas' WHERE idAnciano =5;
+UPDATE anciano SET provinciaOrigen = 'Guayas' WHERE idAnciano =6;
+UPDATE anciano SET provinciaOrigen = 'Manabi' WHERE idAnciano =7;
+UPDATE anciano SET provinciaOrigen = 'Esmeraldas' WHERE idAnciano =8;
+
+SELECT * FROM anciano;
+
+--Consulta para ireport
+
+SELECT nombres +' '+apellidos AS nombresCompletos, edad, provinciaOrigen, COUNT(provinciaOrigen) AS numeroAncianos
+FROM anciano GROUP BY nombres, apellidos, edad, provinciaOrigen;
